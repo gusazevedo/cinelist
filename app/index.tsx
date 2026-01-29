@@ -3,12 +3,14 @@ import { Input } from "@/components/ui/input";
 import { Image } from "expo-image";
 import { useRef } from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,10 +21,19 @@ export default function App() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.select({ ios: "padding", android: "height" })}
+        keyboardVerticalOffset={Platform.select({ ios: 0, android: 20 })}
       >
-        <ScrollView>
-          <Hero />
-          <Form />
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <Hero />
+              <Form />
+            </View>
+          </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -58,12 +69,18 @@ function Form() {
         keyboardType="email-address"
         onSubmitEditing={() => pswdInputRef.current?.focus()}
         returnKeyType="next"
-        submitBehavior="newline"
+        autoComplete="email"
+        textContentType="emailAddress"
+        autoCapitalize="none"
       />
       <Input
         ref={pswdInputRef}
         placeholder="Digite sua senha"
         secureTextEntry={true}
+        autoComplete="password"
+        textContentType="password"
+        returnKeyType="done"
+        onSubmitEditing={Keyboard.dismiss}
       />
       <AnimatedButton label="Entrar" style={formStyles.button} />
     </View>
